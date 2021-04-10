@@ -17,6 +17,25 @@ To enable global access of our devices, the smartphone uploads the device status
 
 All of these features can be easily implemented on ESP32 dual core MCU with supporting Ultra Low Power(ULP) cores and hardware acceleration for ML tasks( explained later).
 
+## How our implementation is better than the existing market players:
+### **SECURITY**
+We have implemented encryption not only at software level but also in our hardware(ESP32) by customising the partition scheme.To implement a **Server-Less** model, we have **Peer-to-Peer(P2P)** communication between the nodes of the mesh as well as with the smartphone.To enable global access of our devices, the smartphone uploads the device status to iCloud with encryption enabled. At no time the devices are directly connected to the cloud server. .So no one can control our devices until they have gone through the initial setup process wihich only involves scanning of QR-code from smart-phone and all the wifi and cloud credential are automatically configured. 
+At the **Hardware** level, it is important to enable on device secure encryption boot and flash of the firmware.This removes the possibility of hacking into the system manually by reading the Flash memory registers of the device(ESP32).For this we have made a custom NVS partition scheme to enable code operation modularity:
+
+- 2 OTA update partitions for secure boot after over-the-air update of firmware.
+- HomeKit and MESH running on 1 core and Wake word detection on the other.(ESP32 is a dual core SoC)
+
+### Dynamic Addition of various types of devices with just 1 product using MESH which communicates on our custom encrypted networking protocol rather than HTTPS or MQTT.
+
+### Our device does'nt require the users to download any extra app.Our device works and syncs with both **Apple-HomeKit**, **Google Home** apps which come **Pre-Installed** on all iOS and Android devices.
+
+### **On Device Offline Speech Recognition which will be our source of revenue**
+
+### **Our Product is easily scalable and can be implemented on a very large agricultural field or an industrial factory for automation without making any changes**
+
+###**Our product is fault-tolerant with priority levels given to the device which was initially used for setup and is maintained with our mesh network.**
+
+
 ### Structure of Appliances: 
 
 Device->Accessories->Services->Characteristics
@@ -63,6 +82,13 @@ Every node in the MESH that is able to form downstream connections (i.e. has a s
 - Maximum number of downstream connections to accept
 
 The signal strength of a potential upstream connection is represented by RSSI (Received Signal Strength Indication) of the beacon frames of the potential parent node. To prevent nodes from forming a weak upstream connection, MESH implements an RSSI threshold mechanism for beacon frames. If a node detects a beacon frame with an RSSI below a preconfigured threshold, the transmitting node will be disregarded when forming an upstream connection.
+
+### Communication Protocol
+**Our product is not using HTTPS or MQTT. Instead we have implemented a whole new concept.**
+
+Every WiFi modem along with its RSSI Values, broadcasts **Sub Channel State (CSI) Values** for MAC address etc. This also consumes a lot of power so why not make good use of it. We will broadcast our encrypted data throughout the mesh in a compressed JSON script. All the other nodes will just capture this data by tuning into the fundamental frequency of the radio waves and will update their status.
+
+**With this simple concept we have also enabled fault-tolerance as each device acts as a backup for the other.**
 
 ## Challenges we ran into:
 
